@@ -3,14 +3,25 @@ import {
   CurrencyIcon,
   Counter,
 } from "@ya.praktikum/react-developer-burger-ui-components";
-import { ingredientPropType } from "../../utils/prop-types";
+import { useDispatch } from "react-redux";
+import { add } from "../../services/activeIngredientSlice";
+import { useDrag } from "react-dnd";
 
-const BurgerIngredient = ({ ingredientData, count, onSelect }) => {
+const BurgerIngredient = ({ ingredientData, count }) => {
   const { image, price, name } = ingredientData;
-  
+
+  const dispatch = useDispatch();
+
+  const [{ isDragging }, drag] = useDrag(() => ({
+    type: ingredientData.type === "bun" ? "bun" : "ingredient",
+    item: ingredientData,
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+  }), [ingredientData]);
 
   return (
-    <article className={styles.article} onClick={() => onSelect(ingredientData)}>
+    <article ref={drag} className={styles.article} onClick={() => dispatch(add(ingredientData))}>
       {count && <Counter count={count} />}
       <img className={styles.image} src={image} alt="" />
       <div className={`${styles.cost} mt-2 mb-2`}>

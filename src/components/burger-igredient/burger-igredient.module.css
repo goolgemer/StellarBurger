@@ -7,6 +7,11 @@
   cursor: pointer;
 }
 
+.dragging {
+  border-radius: 20px;
+  background-color: aliceblue;
+}
+
 .cost {
   display: flex;
 }

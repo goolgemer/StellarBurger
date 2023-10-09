@@ -1,5 +1,4 @@
 import React, { useCallback, useState } from "react";
-import PropType from "prop-types";
 import {
   Button,
   ConstructorElement,
@@ -9,14 +8,27 @@ import {
 import styles from "./burger-constructor.module.css";
 import { Modal } from "../modal/modal";
 import OrderDetails from "../order-details/order-details";
+import { useDispatch, useSelector } from "react-redux";
+import clsx from "clsx";
+import {
+  addBun,
+  addIngredient,
+  removeBun,
+  removeIngredient,
+} from "../../services/burgerConstructorSlice";
+import { useDrop } from "react-dnd";
 
-const BurgerConstructor = ({ constructorIngredients }) => {
-  const bun = constructorIngredients.find(
-    (ingredient) => ingredient.type === "bun"
+const BurgerConstructor = () => {
+  const bun = useSelector((state) => state.burgerConstructor.bun);
+  const ingredients = useSelector(
+    (state) => state.burgerConstructor.ingredients
   );
-  const ingredients = constructorIngredients.filter(
-    (ingredient) => ingredient.type !== "bun"
-  );
+
+  const dispatch = useDispatch();
+
+  const price =
+    (bun?.price ?? 0) * 2 +
+    ingredients.reduce((sum, item) => sum + item.price, 0);
 
   const [isOpen, setOpen] = useState(false);
 
@@ -28,47 +40,110 @@ const BurgerConstructor = ({ constructorIngredients }) => {
     setOpen(false);
   }, []);
 
+  const [canDropTop, topBunDrop] = useDrop({
+    accept: "bun",
+    drop: (data) => dispatch(addBun(data)),
+    collect: (monitor) => monitor.canDrop(),
+  });
+
+  const [canDropBottom, bottomBunDrop] = useDrop({
+    accept: "bun",
+    drop: (data) => dispatch(addBun(data)),
+    collect: (monitor) => monitor.canDrop(),
+  });
+
+  const [canDropIngredient, ingredientDrop] = useDrop({
+    accept: "ingredient",
+    drop: (data) => dispatch(addIngredient(data)),
+    collect: (monitor) => monitor.canDrop(),
+  });
+
   return (
-    <section className={`${styles.burger_constructor} mb-25`}>
-      <div className={`${styles.element} ml-15 mr-4`}>
-        <ConstructorElement
-          type="top"
-          isLocked={true}
-          text={`${bun.name} (вверх)`}
-          price={bun.price}
-          thumbnail={bun.image}
-        />
-      </div>
+    <section>
       <ul className={styles.elements}>
-        {ingredients.map((item, index) => {
-          return (
-            <li className={`${styles.element} mb-4 mr-2`} key={index}>
-              <DragIcon />
-              <div className={`${styles.element_fullwidth} ml-2`}>
+        <li className={clsx(styles.element, "pl-8")}>
+          {bun !== null ? (
+            <ConstructorElement
+              extraClass={styles.constructorElement}
+              type="top"
+              text={`${bun.name} (вверх)`}
+              price={bun.price}
+              thumbnail={bun.image}
+              isLocked={ingredients.length > 0}
+              handleClose={() => dispatch(removeBun())}
+            />
+          ) : (
+            <div
+              ref={topBunDrop}
+              className={clsx(
+                styles.burgerSkeleton,
+                styles.burgerSkeletonTop,
+                canDropTop && styles.burgerSkeletonOver
+              )}
+            />
+          )}
+        </li>
+        {bun !== null &&
+          ingredients.length > 0 &&
+          ingredients.map((item, index) => {
+            return (
+              <li
+                className={styles.element}
+                key={item._id}
+              >
+                <span
+                  className={clsx(styles.dragHandle, "mr-2")}
+                >
+                  <DragIcon />
+                </span>
                 <ConstructorElement
+                  extraClass={styles.constructorElement}
                   text={item.name}
                   price={item.price}
                   thumbnail={item.image}
+                  handleClose={() => dispatch(removeIngredient(index))}
                 />
-              </div>
-            </li>
-          );
-        })}
+              </li>
+            );
+          })}
+        {bun !== null && (ingredients.length === 0 || canDropIngredient) && (
+          <li ref={ingredientDrop} className={clsx(styles.element, "pl-8")}>
+            <div
+              className={clsx(
+                styles.burgerSkeleton,
+                canDropIngredient && styles.burgerSkeletonOver
+              )}
+            />
+          </li>
+        )}
+        <li className={clsx(styles.element, "pl-8")}>
+          {bun !== null ? (
+            <ConstructorElement
+              extraClass={styles.constructorElement}
+              type="bottom"
+              text={`${bun.name} (низ)`}
+              price={bun.price}
+              thumbnail={bun.image}
+              isLocked={ingredients.length > 0}
+              handleClose={() => dispatch(removeBun())}
+            />
+          ) : (
+            <div
+              ref={bottomBunDrop}
+              className={clsx(
+                styles.burgerSkeleton,
+                styles.burgerSkeletonBottom,
+                canDropBottom && styles.burgerSkeletonOver
+              )}
+            />
+          )}
+        </li>
       </ul>
-      <div className={`${styles.element} ml-20 mr-4`}>
-        <ConstructorElement
-          type="bottom"
-          isLocked={true}
-          text={`${bun.name} (низ)`}
-          price={bun.price}
-          thumbnail={bun.image}
-        />
-      </div>
-      <div className={`${styles.total} mt-10 mr-4`}>
-        <div className={`${styles.cost} mr-10`}>
-          <p className={`${styles.text} text mr-2`}>610</p>
+      <div className={clsx(styles.bottom, "mt-10")}>
+        <p className="text text_type_digits-medium">{price}</p>
+        <span className={clsx(styles.currencyIcon, "ml-2 mr-10")}>
           <CurrencyIcon />
-        </div>
+        </span>
         <Button
           htmlType="button"
           type="primary"

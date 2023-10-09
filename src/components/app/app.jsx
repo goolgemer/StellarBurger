@@ -1,18 +1,25 @@
 import styles from "./app.module.css";
 import { data } from "../../utils/data";
 import AppHeader from "../header/app-header";
-import { PasswordInput } from "@ya.praktikum/react-developer-burger-ui-components";
 import BurgerIngredients from "../burger-ingredients/burger-ingredients";
 import BurgerConstructor from "../burger-constructor/burger-constructor";
+import IngredientDetailsModal from "../ingredient-details/ingredient-details-modal";
+import clsx from "clsx";
 
 function App() {
   return (
     <div className={styles.app}>
       <AppHeader />
-      <main className={`${styles.main} pl-5 pt-25 pr-5`}>
-        <BurgerIngredients ingredients={data} />
-        <BurgerConstructor constructorIngredients={data} />
+      <main className={clsx(styles.main, "pt-10")}>
+        <h1 className="text text_type_main-large">
+          Соберите бургер
+        </h1>
+        <div className={clsx(styles.content, "pt-5")}>
+          <BurgerIngredients />
+          <BurgerConstructor constructorIngredients={data} />
+        </div>
       </main>
+      <IngredientDetailsModal />
     </div>
   );
 }
