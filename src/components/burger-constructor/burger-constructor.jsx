@@ -4,8 +4,6 @@ import {
   CurrencyIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from "./burger-constructor.module.css";
-import { Modal } from "../modal/modal";
-import OrderDetails from "../order-details/order-details";
 import { useDispatch, useSelector } from "react-redux";
 import clsx from "clsx";
 import {
@@ -14,22 +12,23 @@ import {
   removeBun,
 } from "../../services/burgerConstructorSlice";
 import { useDrop } from "react-dnd";
-import { useModal } from "../../hooks/useModal";
 import BurgerConstructorIngredient from "../burger-constructor-ingredient/burger-constructor-ingredient";
+import { useMakeOrderMutation } from "../../services/api";
+import { setOrderDetails, setOrderDetailsError } from "../../services/orderDetailsSlice";
+import OrderDetailsModal from "../order-details/order-details-modal";
 
 const BurgerConstructor = () => {
   const bun = useSelector((state) => state.burgerConstructor.bun);
   const ingredients = useSelector(
     (state) => state.burgerConstructor.ingredients
   );
+  const [makeOrder, { isLoading: isOrdering }] = useMakeOrderMutation();
 
   const dispatch = useDispatch();
 
   const price =
     (bun?.price ?? 0) * 2 +
     ingredients.reduce((sum, item) => sum + item.price, 0);
-
-  const { isModalOpen, openModal, closeModal } = useModal();
 
   const [canDropTop, topBunDrop] = useDrop({
     accept: "bun",
@@ -48,6 +47,24 @@ const BurgerConstructor = () => {
     drop: (data) => dispatch(addIngredient(data)),
     collect: (monitor) => monitor.canDrop(),
   });
+
+  const onClick = async () => {
+    if (bun !== null) {
+      const ingredientIds = [
+        bun._id,
+        ...ingredients.map((item) => item._id),
+        bun._id,
+      ];
+      try {
+        const orderDetails = await makeOrder({
+          ingredients: ingredientIds,
+        }).unwrap();
+        dispatch(setOrderDetails(orderDetails));
+      } catch (err) {
+        dispatch(setOrderDetailsError(err.message));
+      }
+    }
+  };
 
   return (
     <section>
@@ -73,13 +90,16 @@ const BurgerConstructor = () => {
             />
           )}
         </li>
-        {ingredients.length > 0 && (
+        {ingredients.length > 0 &&
           ingredients.map((item, index) => {
             return (
-              <BurgerConstructorIngredient key={item.uniqueId} item={item} index={index} />
+              <BurgerConstructorIngredient
+                key={item.uniqueId}
+                item={item}
+                index={index}
+              />
             );
-          })
-        )}
+          })}
         {(ingredients.length === 0 || canDropIngredient) && (
           <li ref={ingredientDrop} className={clsx(styles.element, "pl-8")}>
             <div
@@ -123,14 +143,11 @@ const BurgerConstructor = () => {
           type="primary"
           size="large"
           children="Оформить заказ"
-          onClick={openModal}
+          onClick={onClick}
+          disabled={bun === null || isOrdering}
         />
       </div>
-      {isModalOpen && (
-        <Modal onClose={closeModal}>
-          <OrderDetails />
-        </Modal>
-      )}
+      <OrderDetailsModal />
     </section>
   );
 };

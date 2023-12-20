@@ -2,14 +2,14 @@ import BurgerIngredient from "../burger-ingredient/burger-ingredient";
 import styles from "./ingredients-category.module.css";
 import { categoryPropType } from "../../utils/prop-types";
 import React from "react";
-import { api } from "../../services/api";
+import { useGetIngredientsQuery } from "../../services/api";
 import PropTypes from "prop-types";
 import { InView } from "react-intersection-observer";
 import { useDispatch } from "react-redux";
 import { setVisible } from "../../services/currentTabSlice";
 
 const IngredientsCategory = React.forwardRef(({ title, category, containerRef }, ref) => {
-  const { data } = api.endpoints.getIngredients.useQuery();
+  const { data } = useGetIngredientsQuery();
   const dispatch = useDispatch();
 
   const ingredients =

@@ -13,5 +13,19 @@ export const api = createApi({
         ...result.map(({ _id }) => ({ type: 'Ingredients', id: _id })),
       ],
     }),
+    makeOrder: build.mutation({
+      query: (body) => ({
+        url: `orders`,
+        method: 'POST',
+        body,
+      }),
+      transformResponse: (response, meta, arg) => response,
+      transformErrorResponse: (response, meta, arg) => response.status,
+    }),
   }),
 })
+
+export const {
+  useGetIngredientsQuery,
+  useMakeOrderMutation,
+} = api;

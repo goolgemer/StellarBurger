@@ -1,9 +1,10 @@
 import styles from "./order-details.module.css";
+import PropTypes from "prop-types";
 
-const OrderDetails = () => {
+const OrderDetails = ({ data }) => {
   return (
     <div className={styles.container}>
-      <div className="text text_type_digits-large">034536</div>
+      <div className="text text_type_digits-large">{data.order.number}</div>
       <div className="text text_type_main-medium mt-8">
         идентификатор заказа
       </div>
@@ -19,6 +20,14 @@ const OrderDetails = () => {
       </div>
     </div>
   );
+};
+
+OrderDetails.propTypes = {
+  data: PropTypes.shape({
+    order: PropTypes.shape({
+      number: PropTypes.number.isRequired,
+    }).isRequired,
+  }),
 };
 
 export default OrderDetails;
