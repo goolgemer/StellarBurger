@@ -1,9 +1,7 @@
-import React, { useCallback, useState } from "react";
 import {
   Button,
   ConstructorElement,
   CurrencyIcon,
-  DragIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import styles from "./burger-constructor.module.css";
 import { Modal } from "../modal/modal";
@@ -14,9 +12,10 @@ import {
   addBun,
   addIngredient,
   removeBun,
-  removeIngredient,
 } from "../../services/burgerConstructorSlice";
 import { useDrop } from "react-dnd";
+import { useModal } from "../../hooks/useModal";
+import BurgerConstructorIngredient from "../burger-constructor-ingredient/burger-constructor-ingredient";
 
 const BurgerConstructor = () => {
   const bun = useSelector((state) => state.burgerConstructor.bun);
@@ -30,15 +29,7 @@ const BurgerConstructor = () => {
     (bun?.price ?? 0) * 2 +
     ingredients.reduce((sum, item) => sum + item.price, 0);
 
-  const [isOpen, setOpen] = useState(false);
-
-  const onOpen = useCallback(() => {
-    setOpen(true);
-  }, []);
-
-  const onClose = useCallback(() => {
-    setOpen(false);
-  }, []);
+  const { isModalOpen, openModal, closeModal } = useModal();
 
   const [canDropTop, topBunDrop] = useDrop({
     accept: "bun",
@@ -61,20 +52,19 @@ const BurgerConstructor = () => {
   return (
     <section>
       <ul className={styles.elements}>
-        <li className={clsx(styles.element, "pl-8")}>
+        <li ref={topBunDrop} className={clsx(styles.element, "pl-8")}>
           {bun !== null ? (
             <ConstructorElement
               extraClass={styles.constructorElement}
               type="top"
-              text={`${bun.name} (вверх)`}
+              text={`${bun.name} (верх)`}
               price={bun.price}
               thumbnail={bun.image}
-              isLocked={ingredients.length > 0}
+              isLocked={false}
               handleClose={() => dispatch(removeBun())}
             />
           ) : (
             <div
-              ref={topBunDrop}
               className={clsx(
                 styles.burgerSkeleton,
                 styles.burgerSkeletonTop,
@@ -83,30 +73,14 @@ const BurgerConstructor = () => {
             />
           )}
         </li>
-        {bun !== null &&
-          ingredients.length > 0 &&
+        {ingredients.length > 0 && (
           ingredients.map((item, index) => {
             return (
-              <li
-                className={styles.element}
-                key={item._id}
-              >
-                <span
-                  className={clsx(styles.dragHandle, "mr-2")}
-                >
-                  <DragIcon />
-                </span>
-                <ConstructorElement
-                  extraClass={styles.constructorElement}
-                  text={item.name}
-                  price={item.price}
-                  thumbnail={item.image}
-                  handleClose={() => dispatch(removeIngredient(index))}
-                />
-              </li>
+              <BurgerConstructorIngredient key={item.uniqueId} item={item} index={index} />
             );
-          })}
-        {bun !== null && (ingredients.length === 0 || canDropIngredient) && (
+          })
+        )}
+        {(ingredients.length === 0 || canDropIngredient) && (
           <li ref={ingredientDrop} className={clsx(styles.element, "pl-8")}>
             <div
               className={clsx(
@@ -124,7 +98,7 @@ const BurgerConstructor = () => {
               text={`${bun.name} (низ)`}
               price={bun.price}
               thumbnail={bun.image}
-              isLocked={ingredients.length > 0}
+              isLocked={false}
               handleClose={() => dispatch(removeBun())}
             />
           ) : (
@@ -149,12 +123,14 @@ const BurgerConstructor = () => {
           type="primary"
           size="large"
           children="Оформить заказ"
-          onClick={onOpen}
+          onClick={openModal}
         />
       </div>
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <OrderDetails />
-      </Modal>
+      {isModalOpen && (
+        <Modal onClose={closeModal}>
+          <OrderDetails />
+        </Modal>
+      )}
     </section>
   );
 };

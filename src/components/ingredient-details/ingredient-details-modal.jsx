@@ -10,12 +10,15 @@ export const IngredientDetailsModal = () => {
 
   const onClose = useCallback(() => {
     dispatch(remove());
-  }, []);
+  }, [dispatch]);
+
+  if (data === null) {
+    return null;
+  }
 
   return (
     <Modal
       title="Детали ингредиента"
-      isOpen={data !== null}
       onClose={onClose}
     >
       {data && (

@@ -1,10 +1,11 @@
 import clsx from "clsx";
 import styles from "./ingredient-details.module.css";
+import { ingredientPropType } from "../../utils/prop-types";
 
 const IngredientDetails = ({ data }) => {
   return (
     <div className={styles.container}>
-      <img className={styles.image} src={data.image_large} alt="" />
+      <img className={styles.image} src={data.image_large} alt={data.name} />
       <div className="text text_type_main-medium mt-4">{data.name}</div>
       <div className={clsx(styles.details, "text text_type_main-default mt-8")}>
         <div className={styles.detailItem}>
@@ -27,5 +28,9 @@ const IngredientDetails = ({ data }) => {
     </div>
   );
 };
+
+IngredientDetails.propTypes = {
+  data: ingredientPropType.isRequired,
+}
 
 export default IngredientDetails;

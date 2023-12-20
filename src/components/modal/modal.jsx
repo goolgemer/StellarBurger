@@ -2,8 +2,9 @@ import { CloseIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import styles from "./modal.module.css";
+import PropType from "prop-types";
 
-export const Modal = ({ title, children, isOpen, onClose }) => {
+export const Modal = ({ title, children, onClose }) => {
   useEffect(() => {
     const onKeyDown = (event) => {
       if (event.code === "Escape") {
@@ -11,22 +12,16 @@ export const Modal = ({ title, children, isOpen, onClose }) => {
       }
     };
 
-    if (isOpen) {
-      document.addEventListener("keydown", onKeyDown, { once: true });
-    }
+    document.addEventListener("keydown", onKeyDown);
 
     return () => {
-      document.removeEventListener("keydown", onKeyDown, { once: true });
+      document.removeEventListener("keydown", onKeyDown);
     };
-  }, [isOpen, onClose]);
-
-  if (!isOpen) {
-    return null;
-  }
+  }, [onClose]);
 
   return createPortal(
     <div className={styles.container}>
-      <div className={styles.overlay} onClick={onClose}></div>
+      <ModalOverlay onClose={onClose} />
       <div className={styles.modal}>
         <div className={styles.header}>
           <p className="text text_type_main-large">{title}</p>
@@ -37,4 +32,20 @@ export const Modal = ({ title, children, isOpen, onClose }) => {
     </div>,
     document.getElementById("modal-container")
   );
+};
+
+Modal.propTypes = {
+  title: PropType.string,
+  children: PropType.node,
+  onClose: PropType.func.isRequired,
+};
+
+export const ModalOverlay = ({ onClose }) => {
+  return (
+    <div className={styles.overlay} onClick={onClose}></div>
+  );
+};
+
+ModalOverlay.propTypes = {
+  onClose: PropType.func.isRequired,
 };

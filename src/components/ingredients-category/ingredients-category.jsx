@@ -1,47 +1,54 @@
-import BurgerIngredient from "../burger-igredient/burger-igredient";
+import BurgerIngredient from "../burger-ingredient/burger-ingredient";
 import styles from "./ingredients-category.module.css";
-import { ingredientsCategoryPropType } from "../../utils/prop-types";
-import { useEffect, useRef } from "react";
-import { useSelector } from "react-redux";
+import { categoryPropType } from "../../utils/prop-types";
+import React from "react";
 import { api } from "../../services/api";
+import PropTypes from "prop-types";
+import { InView } from "react-intersection-observer";
+import { useDispatch } from "react-redux";
+import { setVisible } from "../../services/currentTabSlice";
 
-const IngredientsCategory = ({ title, category }) => {
-  const ref = useRef(null);
+const IngredientsCategory = React.forwardRef(({ title, category, containerRef }, ref) => {
   const { data } = api.endpoints.getIngredients.useQuery();
-  const currentTab = useSelector(state => state.currentTab.value);
+  const dispatch = useDispatch();
 
-  
-  const ingredients = data !== undefined ? data.filter((item) => item.type === category) : [];
+  const ingredients =
+    data !== undefined ? data.filter((item) => item.type === category) : [];
 
-  useEffect(() => {
-    if (currentTab === category && ref.current && ref.current.parentElement) {
-      ref.current.parentElement.scrollTo({
-        top: ref.current.offsetTop - ref.current.parentElement.offsetTop,
-        behavior: 'smooth',
-      });
-    }
-  }, [currentTab, category]);
+  if (data === undefined) {
+    return null;
+  }
 
   return (
     <>
-      <h3 ref={ref} className=" text text_type_main-medium mt-10 mb-6" id={category}>
-        {title}
-      </h3>
-      <div className={styles.item}>
-        {ingredients.map((ingredient) => {
-          return (
-            <BurgerIngredient
-              ingredientData={ingredient}
-              key={ingredient._id}
-              count={1}
-            />
-          );
-        })}
-      </div>
+      <div ref={ref} />
+      <InView
+        onChange={(inView) => dispatch(setVisible({ category, isVisible: inView }))}
+        root={containerRef.current}
+        threshold={[0.15, 0.85]}
+      >
+        <h3 className=" text text_type_main-medium mt-10 mb-6" id={category}>
+          {title}
+        </h3>
+        <div className={styles.item}>
+          {ingredients.map((ingredient) => {
+            return (
+              <BurgerIngredient
+                ingredientData={ingredient}
+                key={ingredient._id}
+                count={1}
+              />
+            );
+          })}
+        </div>
+      </InView>
     </>
   );
-};
+});
 
-IngredientsCategory.propTypes = ingredientsCategoryPropType;
+IngredientsCategory.propTypes = {
+  title: PropTypes.string.isRequired,
+  category: categoryPropType.isRequired,
+};
 
 export default IngredientsCategory;

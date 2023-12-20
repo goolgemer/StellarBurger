@@ -7,7 +7,7 @@ const OrderDetails = () => {
       <div className="text text_type_main-medium mt-8">
         идентификатор заказа
       </div>
-      <img className="mt-15" src="./checkmark.svg" alt="" />
+      <img className="mt-15" src="./checkmark.svg" alt="checkmark icon" />
       <div className="text text_type_main-default mt-15">
         Ваш заказ начали готовить
       </div>

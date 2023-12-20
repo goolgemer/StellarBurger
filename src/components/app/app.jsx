@@ -1,5 +1,4 @@
 import styles from "./app.module.css";
-import { data } from "../../utils/data";
 import AppHeader from "../header/app-header";
 import BurgerIngredients from "../burger-ingredients/burger-ingredients";
 import BurgerConstructor from "../burger-constructor/burger-constructor";
@@ -16,7 +15,7 @@ function App() {
         </h1>
         <div className={clsx(styles.content, "pt-5")}>
           <BurgerIngredients />
-          <BurgerConstructor constructorIngredients={data} />
+          <BurgerConstructor />
         </div>
       </main>
       <IngredientDetailsModal />
