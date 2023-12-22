@@ -24,7 +24,6 @@ export const Modal = ({ title, children, onClose }) => {
       <ModalOverlay onClose={onClose} />
       <div className={styles.modal}>
         <div className={styles.header}>
-          <p className="text text_type_main-large">{title}</p>
           <CloseIcon onClick={onClose} />
         </div>
         {children}
@@ -41,9 +40,7 @@ Modal.propTypes = {
 };
 
 export const ModalOverlay = ({ onClose }) => {
-  return (
-    <div className={styles.overlay} onClick={onClose}></div>
-  );
+  return <div className={styles.overlay} onClick={onClose}></div>;
 };
 
 ModalOverlay.propTypes = {

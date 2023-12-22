@@ -5,7 +5,10 @@ import {
 import styles from "../burger-constructor/burger-constructor.module.css";
 import { useDispatch } from "react-redux";
 import clsx from "clsx";
-import { moveIngredient, removeIngredient } from "../../services/burgerConstructorSlice";
+import {
+  moveIngredient,
+  removeIngredient,
+} from "../../services/burgerConstructorSlice";
 import { useDrag, useDrop } from "react-dnd";
 import { useRef } from "react";
 import PropTypes from "prop-types";
@@ -54,10 +57,12 @@ const BurgerConstructorIngredient = ({ item, index }) => {
         return;
       }
       // Time to actually perform the action
-      dispatch(moveIngredient({
-        dragIndex,
-        hoverIndex,
-      }));
+      dispatch(
+        moveIngredient({
+          dragIndex,
+          hoverIndex,
+        })
+      );
       // Note: we're mutating the monitor item here!
       // Generally it's better to avoid mutations,
       // but it's good here for the sake of performance
@@ -101,6 +106,6 @@ const BurgerConstructorIngredient = ({ item, index }) => {
 BurgerConstructorIngredient.propTypes = {
   item: ingredientPropType.isRequired,
   index: PropTypes.number.isRequired,
-}
+};
 
 export default BurgerConstructorIngredient;

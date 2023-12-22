@@ -14,7 +14,10 @@ import {
 import { useDrop } from "react-dnd";
 import BurgerConstructorIngredient from "../burger-constructor-ingredient/burger-constructor-ingredient";
 import { useMakeOrderMutation } from "../../services/api";
-import { setOrderDetails, setOrderDetailsError } from "../../services/orderDetailsSlice";
+import {
+  setOrderDetails,
+  setOrderDetailsError,
+} from "../../services/orderDetailsSlice";
 import OrderDetailsModal from "../order-details/order-details-modal";
 
 const BurgerConstructor = () => {
@@ -77,7 +80,7 @@ const BurgerConstructor = () => {
               text={`${bun.name} (верх)`}
               price={bun.price}
               thumbnail={bun.image}
-              isLocked={false}
+              isLocked={true}
               handleClose={() => dispatch(removeBun())}
             />
           ) : (
@@ -118,7 +121,7 @@ const BurgerConstructor = () => {
               text={`${bun.name} (низ)`}
               price={bun.price}
               thumbnail={bun.image}
-              isLocked={false}
+              isLocked={true}
               handleClose={() => dispatch(removeBun())}
             />
           ) : (

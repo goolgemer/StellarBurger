@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 import { useRef } from "react";
 
 const BurgerIngredients = () => {
-  const currentTab = useSelector(state => state.currentTab.value);
+  const currentTab = useSelector((state) => state.currentTab.value);
   const containerRef = useRef(null);
   const ingredientRef = useRef({
     bun: null,
@@ -18,11 +18,13 @@ const BurgerIngredients = () => {
   const onClick = (tab) => {
     if (containerRef.current && ingredientRef.current[tab]) {
       containerRef.current.scrollTo({
-        top: ingredientRef.current[tab].offsetTop - ingredientRef.current[tab].parentElement.offsetTop,
-        behavior: 'smooth',
+        top:
+          ingredientRef.current[tab].offsetTop -
+          ingredientRef.current[tab].parentElement.offsetTop,
+        behavior: "smooth",
       });
     }
-  }
+  };
 
   return (
     <section className={`${styles.burgerIngredients}`}>
@@ -55,19 +57,19 @@ const BurgerIngredients = () => {
         <IngredientsCategory
           title="Булки"
           category="bun"
-          ref={ref => ingredientRef.current.bun = ref}
+          ref={(ref) => (ingredientRef.current.bun = ref)}
           containerRef={containerRef}
         />
         <IngredientsCategory
           title="Начинка"
           category="main"
-          ref={ref => ingredientRef.current.main = ref}
+          ref={(ref) => (ingredientRef.current.main = ref)}
           containerRef={containerRef}
         />
         <IngredientsCategory
           title="Соусы"
           category="sauce"
-          ref={ref => ingredientRef.current.sauce = ref}
+          ref={(ref) => (ingredientRef.current.sauce = ref)}
           containerRef={containerRef}
         />
       </div>
