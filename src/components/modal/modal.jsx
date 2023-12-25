@@ -24,6 +24,7 @@ export const Modal = ({ title, children, onClose }) => {
       <ModalOverlay onClose={onClose} />
       <div className={styles.modal}>
         <div className={styles.header}>
+          <p className="text text_type_main-large mt-4">{title}</p>
           <CloseIcon onClick={onClose} />
         </div>
         {children}

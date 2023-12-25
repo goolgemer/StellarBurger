@@ -17,15 +17,10 @@ export const OrderDetailsModal = () => {
   }
 
   return (
-    <Modal
-      title="Детали ингредиента"
-      onClose={onClose}
-    >
-      {data && (
-        <OrderDetails data={data} />
-      )}
+    <Modal title="" onClose={onClose}>
+      {data && <OrderDetails data={data} />}
     </Modal>
   );
-}
+};
 
 export default OrderDetailsModal;

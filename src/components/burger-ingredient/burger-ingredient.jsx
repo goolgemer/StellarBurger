@@ -45,7 +45,11 @@ const BurgerIngredient = ({ ingredientData }) => {
       onClick={() => dispatch(add(ingredientData))}
     >
       {count > 0 && <Counter count={count} />}
-      <img className={styles.image} src={image} alt={image.name} />
+      <img
+        className={styles.image}
+        src={image}
+        alt={("Фото ингредиента: ", name)}
+      />
       <div className={`${styles.cost} mt-2 mb-2`}>
         <p className="text text_type_digits-default mr-2">{price}</p>
         <CurrencyIcon />
