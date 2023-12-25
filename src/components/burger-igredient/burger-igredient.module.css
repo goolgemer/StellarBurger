@@ -1,0 +1,21 @@
+.article {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  max-width: 272px;
+  cursor: pointer;
+}
+
+.dragging {
+  border-radius: 20px;
+  background-color: aliceblue;
+}
+
+.cost {
+  display: flex;
+}
+
+.text {
+  text-align: center;
+}

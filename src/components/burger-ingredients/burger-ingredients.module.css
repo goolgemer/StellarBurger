@@ -1,0 +1,22 @@
+.menu {
+  display: flex;
+  padding-left: 0;
+}
+
+.content {
+  max-height: calc(100vh - 278px);
+  overflow-y: auto;
+  height: calc(100vh - 414px);
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #2f2f37;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #8585ad;
+}

@@ -1,0 +1,99 @@
+.elements {
+  display: grid;
+  gap: 16px;
+  padding: 0;
+  margin: 0;
+}
+
+.element {
+  list-style: none;
+  display: flex;
+  align-items: center;
+}
+
+.constructorElement {
+  max-width: none;
+}
+
+.dragHandle {
+  cursor: pointer;
+}
+
+.bottom {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.currencyIcon > svg {
+  width: 36px;
+  height: 36px;
+}
+
+.burgerSkeleton {
+  padding: 16px 24px;
+  display: inline-block;
+  border-radius: var(--common-border-radius-s);
+  border: 2px dashed var(--background-element);
+  background-color: var(--background);
+  width: 100%;
+  min-height: 80px;
+  flex-grow: 1;
+  box-sizing: border-box;
+}
+
+.burgerSkeletonTop {
+  border-radius: var(--top-constructor-item-border-radius);
+}
+
+.burgerSkeletonBottom {
+  border-radius: var(--bottom-constructor-item-border-radius);
+}
+
+.burgerSkeletonOver {
+  border-color: #fff;
+}
+
+/* .element {
+  display: flex;
+  align-items: center;
+}
+
+.element_fullwidth {
+  width: 100%;
+}
+
+.elements {
+  max-height: calc(100vh - 608px);
+  overflow-y: auto;
+}
+
+.burger_constructor {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.total {
+  display: flex;
+  align-items: center;
+  justify-content: end;
+}
+
+.text {
+  color: var(--text-primary-light-standart-text, #f2f2f3);
+  text-align: right;
+  font-family: Iceland;
+  font-size: 48px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 36px;
+}
+
+.cost {
+  display: flex;
+  align-items: center;
+}
+
+.list {
+} */
